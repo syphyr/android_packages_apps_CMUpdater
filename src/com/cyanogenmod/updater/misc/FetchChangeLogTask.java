@@ -154,7 +154,6 @@ public class FetchChangeLogTask extends AsyncTask<UpdateInfo, Void, Void>
                     new FileWriter(info.getChangeLogFile(mContext)));
             ByteArrayInputStream bais = new ByteArrayInputStream(response.getBytes());
             reader = new BufferedReader(new InputStreamReader(bais), 2 * 1024);
-            boolean categoryMatch = false, hasData = false;
             String line;
 
             while ((line = reader.readLine()) != null) {
@@ -162,30 +161,7 @@ public class FetchChangeLogTask extends AsyncTask<UpdateInfo, Void, Void>
                 if (line.isEmpty()) {
                     continue;
                 }
-
-                if (line.startsWith("=")) {
-                    categoryMatch = !categoryMatch;
-                } else if (categoryMatch) {
-                    if (hasData) {
-                        writer.append("<br />");
-                    }
-                    writer.append("<b><u>");
-                    writer.append(line);
-                    writer.append("</u></b>");
-                    writer.append("<br />");
-                    hasData = true;
-                } else if (line.startsWith("*")) {
-                    writer.append("<br /><b>");
-                    writer.append(line.replaceAll("\\*", ""));
-                    writer.append("</b>");
-                    writer.append("<br />");
-                    hasData = true;
-                } else {
-                    writer.append("&#8226;&nbsp;");
-                    writer.append(line);
-                    writer.append("<br />");
-                    hasData = true;
-                }
+                writer.append(line);
             }
             finished = true;
         } catch (IOException e) {
